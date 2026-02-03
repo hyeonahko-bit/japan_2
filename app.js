@@ -160,7 +160,7 @@ function showResult() {
   progressText.textContent = `${total} / ${total}`;
 
   if (emailStatus) {
-    emailStatus.textContent = "메일 앱이 열리면 전송만 눌러 주세요.";
+    emailStatus.textContent = "제출하면 바로 전송돼요.";
   }
 }
 
@@ -172,20 +172,31 @@ function isValidPhone(phone) {
   return /^[0-9\-+\s()]{7,20}$/.test(phone);
 }
 
-function buildEmailBody(name, phone, email) {
+function getScoreSummary() {
   const total = quizSet.length;
   const percent = total === 0 ? 0 : Math.round((score / total) * 100);
-  return [
-    "일본어 단어 퀴즈 연락처 제출",
-    "",
-    `이름: ${name}`,
-    `전화번호: ${phone}`,
-    `이메일: ${email}`,
-    "",
-    `점수: ${score} / ${total} (${percent}%)`,
-    "",
-    "오늘도 공부 화이팅이에요!"
-  ].join("\n");
+  return { score, total, percent };
+}
+
+async function sendContactEmail(payload) {
+  const response = await fetch("/api/send", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+
+  if (!response.ok) {
+    let errorMessage = "전송에 실패했어요. 잠시 후 다시 시도해 주세요.";
+    try {
+      const data = await response.json();
+      if (data && data.error) {
+        errorMessage = data.error;
+      }
+    } catch (error) {
+      errorMessage = "전송에 실패했어요. 잠시 후 다시 시도해 주세요.";
+    }
+    throw new Error(errorMessage);
+  }
 }
 
 function startQuiz() {
@@ -237,7 +248,7 @@ if (closeContactBtn && contactModal) {
 }
 
 if (submitContactBtn) {
-  submitContactBtn.addEventListener("click", () => {
+  submitContactBtn.addEventListener("click", async () => {
     const name = contactName ? contactName.value.trim() : "";
     const phone = contactPhone ? contactPhone.value.trim() : "";
     const email = contactEmail ? contactEmail.value.trim() : "";
@@ -252,16 +263,45 @@ if (submitContactBtn) {
       return;
     }
 
-    const subject = encodeURIComponent("일본어 단어 퀴즈 연락처");
-    const body = encodeURIComponent(buildEmailBody(name, phone, email));
-    window.location.href =
-      "mailto:seung031220@naver.com?subject=" + subject + "&body=" + body;
-
-    if (emailStatus) {
-      emailStatus.textContent = "메일 앱이 열렸어요. 전송만 눌러 주세요.";
+    const summary = getScoreSummary();
+    const submitText = submitContactBtn.textContent;
+    submitContactBtn.textContent = "전송 중...";
+    submitContactBtn.disabled = true;
+    if (contactError) {
+      contactError.classList.add("hidden");
     }
-    if (contactModal) {
-      contactModal.classList.add("hidden");
+
+    try {
+      await sendContactEmail({
+        name,
+        phone,
+        email,
+        score: summary.score,
+        total: summary.total,
+        percent: summary.percent
+      });
+      if (emailStatus) {
+        emailStatus.textContent = "전송 완료! 감사합니다.";
+      }
+      if (contactModal) {
+        contactModal.classList.add("hidden");
+      }
+      if (contactName) {
+        contactName.value = "";
+      }
+      if (contactPhone) {
+        contactPhone.value = "";
+      }
+      if (contactEmail) {
+        contactEmail.value = "";
+      }
+    } catch (error) {
+      if (emailStatus) {
+        emailStatus.textContent = error.message;
+      }
+    } finally {
+      submitContactBtn.textContent = submitText;
+      submitContactBtn.disabled = false;
     }
   });
 }
