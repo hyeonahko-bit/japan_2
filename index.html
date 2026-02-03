@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>영어 단어 퀴즈</title>
+  <title>일본어 단어 퀴즈</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Noto+Sans+KR:wght@400;600;700&display=swap" rel="stylesheet">
@@ -12,8 +12,8 @@
 <body>
   <div class="app">
     <header class="header">
-      <h1>📚 영어 단어 퀴즈</h1>
-      <p class="subtitle">의미를 맞춰 보세요</p>
+      <h1>🌼 일본어 단어 퀴즈</h1>
+      <p class="subtitle">일본어 뜻을 맞춰 보세요</p>
       <div class="progress-bar">
         <div class="progress-fill" id="progressFill"></div>
       </div>
@@ -24,7 +24,7 @@
       <section class="start-screen" id="startScreen">
         <div class="start-card">
           <h2>준비되셨나요?</h2>
-          <p>영어 단어의 뜻을 고르는 퀴즈입니다.<br>문제 수를 선택하고 시작하세요.</p>
+          <p>일본어 단어의 뜻을 고르는 퀴즈입니다.<br>문제 수를 선택하고 시작하세요.</p>
           <div class="option-buttons">
             <button type="button" class="btn btn-option" data-count="5">5문제</button>
             <button type="button" class="btn btn-option" data-count="10">10문제</button>
@@ -37,7 +37,7 @@
 
       <section class="question-screen hidden" id="questionScreen">
         <div class="question-card">
-          <p class="question-label">다음 단어의 뜻은?</p>
+          <p class="question-label">다음 일본어의 뜻은?</p>
           <h2 class="word-display" id="wordDisplay"></h2>
           <ul class="choices" id="choicesList"></ul>
           <button type="button" class="btn btn-next hidden" id="nextBtn">다음 문제</button>
@@ -53,6 +53,11 @@
           </div>
           <p class="score-message" id="scoreMessage"></p>
           <button type="button" class="btn btn-primary" id="retryBtn">다시 하기</button>
+          <div class="email-card">
+            <p class="email-title">결과 보내기</p>
+            <button type="button" class="btn btn-option" id="openContactBtn">연락처 입력하기</button>
+            <p class="email-help" id="emailStatus">제출을 누르면 메일 앱이 열려요.</p>
+          </div>
         </div>
       </section>
     </main>
@@ -61,6 +66,31 @@
       <p>정답을 클릭하면 즉시 채점됩니다</p>
     </footer>
   </div>
+
+  <div class="modal hidden" id="contactModal" role="dialog" aria-modal="true" aria-labelledby="contactTitle">
+    <div class="modal-card">
+      <h3 id="contactTitle">연락처 입력</h3>
+      <p class="modal-subtitle">이름, 전화번호, 이메일을 적어주세요.</p>
+      <div class="form-field">
+        <label for="contactName">이름</label>
+        <input type="text" id="contactName" placeholder="이름" autocomplete="name">
+      </div>
+      <div class="form-field">
+        <label for="contactPhone">전화번호</label>
+        <input type="tel" id="contactPhone" placeholder="010-0000-0000" autocomplete="tel">
+      </div>
+      <div class="form-field">
+        <label for="contactEmail">이메일</label>
+        <input type="email" id="contactEmail" placeholder="example@email.com" autocomplete="email">
+      </div>
+      <p class="modal-error hidden" id="contactError">모든 항목을 정확히 입력해 주세요.</p>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-option" id="closeContactBtn">닫기</button>
+        <button type="button" class="btn btn-primary" id="submitContactBtn">제출하기</button>
+      </div>
+    </div>
+  </div>
+
   <script src="app.js"></script>
 </body>
 </html>

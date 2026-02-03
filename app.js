@@ -1,28 +1,28 @@
 const words = [
-  { word: "fragile", meaning: "깨지기 쉬운" },
-  { word: "rapid", meaning: "빠른" },
-  { word: "aware", meaning: "인지하고 있는" },
-  { word: "relief", meaning: "안도, 완화" },
-  { word: "dull", meaning: "지루한, 둔한" },
-  { word: "steady", meaning: "안정적인, 꾸준한" },
-  { word: "mild", meaning: "온화한, 가벼운" },
-  { word: "vivid", meaning: "선명한, 생생한" },
-  { word: "essential", meaning: "필수적인" },
-  { word: "odd", meaning: "이상한, 홀수의" },
-  { word: "frequent", meaning: "빈번한" },
-  { word: "generous", meaning: "관대한" },
-  { word: "narrow", meaning: "좁은" },
-  { word: "brief", meaning: "짧은, 간단한" },
-  { word: "maintain", meaning: "유지하다" },
-  { word: "observe", meaning: "관찰하다, 준수하다" },
-  { word: "predict", meaning: "예측하다" },
-  { word: "confirm", meaning: "확인하다" },
-  { word: "expand", meaning: "확장하다" },
-  { word: "seek", meaning: "찾다, 추구하다" },
-  { word: "achieve", meaning: "달성하다" },
-  { word: "decline", meaning: "감소하다, 거절하다" },
-  { word: "assist", meaning: "돕다" },
-  { word: "capture", meaning: "붙잡다, 포착하다" }
+  { word: "ありがとう", meaning: "감사합니다" },
+  { word: "こんにちは", meaning: "안녕하세요" },
+  { word: "さようなら", meaning: "안녕히 가세요/계세요" },
+  { word: "すみません", meaning: "죄송합니다/실례합니다" },
+  { word: "お願いします", meaning: "부탁합니다" },
+  { word: "大丈夫", meaning: "괜찮습니다" },
+  { word: "楽しい", meaning: "즐겁다" },
+  { word: "難しい", meaning: "어렵다" },
+  { word: "簡単", meaning: "간단하다" },
+  { word: "静か", meaning: "조용하다" },
+  { word: "元気", meaning: "건강, 기운" },
+  { word: "忙しい", meaning: "바쁘다" },
+  { word: "暑い", meaning: "덥다" },
+  { word: "寒い", meaning: "춥다" },
+  { word: "高い", meaning: "비싸다/높다" },
+  { word: "安い", meaning: "싸다" },
+  { word: "新しい", meaning: "새롭다" },
+  { word: "古い", meaning: "오래되다/낡다" },
+  { word: "大きい", meaning: "크다" },
+  { word: "小さい", meaning: "작다" },
+  { word: "便利", meaning: "편리하다" },
+  { word: "必要", meaning: "필요하다" },
+  { word: "約束", meaning: "약속" },
+  { word: "気持ち", meaning: "기분/마음" }
 ];
 
 const startScreen = document.getElementById("startScreen");
@@ -37,6 +37,15 @@ const progressFill = document.getElementById("progressFill");
 const progressText = document.getElementById("progressText");
 const scoreValue = document.getElementById("scoreValue");
 const scoreMessage = document.getElementById("scoreMessage");
+const emailStatus = document.getElementById("emailStatus");
+const openContactBtn = document.getElementById("openContactBtn");
+const contactModal = document.getElementById("contactModal");
+const closeContactBtn = document.getElementById("closeContactBtn");
+const submitContactBtn = document.getElementById("submitContactBtn");
+const contactName = document.getElementById("contactName");
+const contactPhone = document.getElementById("contactPhone");
+const contactEmail = document.getElementById("contactEmail");
+const contactError = document.getElementById("contactError");
 
 let selectedCount = 10;
 let quizSet = [];
@@ -149,6 +158,34 @@ function showResult() {
 
   progressFill.style.width = "100%";
   progressText.textContent = `${total} / ${total}`;
+
+  if (emailStatus) {
+    emailStatus.textContent = "메일 앱이 열리면 전송만 눌러 주세요.";
+  }
+}
+
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function isValidPhone(phone) {
+  return /^[0-9\-+\s()]{7,20}$/.test(phone);
+}
+
+function buildEmailBody(name, phone, email) {
+  const total = quizSet.length;
+  const percent = total === 0 ? 0 : Math.round((score / total) * 100);
+  return [
+    "일본어 단어 퀴즈 연락처 제출",
+    "",
+    `이름: ${name}`,
+    `전화번호: ${phone}`,
+    `이메일: ${email}`,
+    "",
+    `점수: ${score} / ${total} (${percent}%)`,
+    "",
+    "오늘도 공부 화이팅이에요!"
+  ].join("\n");
 }
 
 function startQuiz() {
@@ -183,3 +220,48 @@ retryBtn.addEventListener("click", () => {
   optionButtons.forEach((button) => button.classList.remove("selected"));
   selectedCount = 10;
 });
+
+if (openContactBtn && contactModal) {
+  openContactBtn.addEventListener("click", () => {
+    contactModal.classList.remove("hidden");
+    if (contactError) {
+      contactError.classList.add("hidden");
+    }
+  });
+}
+
+if (closeContactBtn && contactModal) {
+  closeContactBtn.addEventListener("click", () => {
+    contactModal.classList.add("hidden");
+  });
+}
+
+if (submitContactBtn) {
+  submitContactBtn.addEventListener("click", () => {
+    const name = contactName ? contactName.value.trim() : "";
+    const phone = contactPhone ? contactPhone.value.trim() : "";
+    const email = contactEmail ? contactEmail.value.trim() : "";
+
+    const isValid =
+      name.length > 0 && isValidPhone(phone) && isValidEmail(email);
+
+    if (!isValid) {
+      if (contactError) {
+        contactError.classList.remove("hidden");
+      }
+      return;
+    }
+
+    const subject = encodeURIComponent("일본어 단어 퀴즈 연락처");
+    const body = encodeURIComponent(buildEmailBody(name, phone, email));
+    window.location.href =
+      "mailto:seung031220@naver.com?subject=" + subject + "&body=" + body;
+
+    if (emailStatus) {
+      emailStatus.textContent = "메일 앱이 열렸어요. 전송만 눌러 주세요.";
+    }
+    if (contactModal) {
+      contactModal.classList.add("hidden");
+    }
+  });
+}

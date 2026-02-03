@@ -303,6 +303,123 @@ body::after {
   margin-bottom: 28px !important;
 }
 
+.email-card {
+  margin-top: 10px;
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px dashed var(--border);
+  background: rgba(255, 255, 255, 0.65);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.email-title {
+  font-size: 0.85rem;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+
+.email-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.email-row input {
+  flex: 1 1 200px;
+  min-width: 180px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  font-size: 0.88rem;
+  font-family: 'Noto Sans KR', sans-serif;
+  background: white;
+}
+
+.email-row input:focus {
+  outline: 2px solid rgba(122, 63, 91, 0.25);
+  border-color: var(--accent);
+}
+
+.email-help {
+  margin-top: 8px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(31, 26, 29, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 10;
+}
+
+.modal-card {
+  width: min(420px, 92vw);
+  background: var(--card);
+  border-radius: 18px;
+  padding: 24px 20px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+.modal-card h3 {
+  font-size: 1.05rem;
+  margin-bottom: 6px;
+}
+
+.modal-subtitle {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+  text-align: left;
+}
+
+.form-field label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.form-field input {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  font-size: 0.9rem;
+  font-family: 'Noto Sans KR', sans-serif;
+  background: white;
+}
+
+.form-field input:focus {
+  outline: 2px solid rgba(122, 63, 91, 0.25);
+  border-color: var(--accent);
+}
+
+.modal-error {
+  font-size: 0.78rem;
+  color: var(--wrong);
+  margin-bottom: 10px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
 .footer {
   margin-top: auto;
   padding-top: 22px;
